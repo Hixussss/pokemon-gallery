@@ -1,0 +1,10 @@
+{
+    "/api/**": {
+        "target": "http://proxy-sh.ad.campus-eni.fr:3128",
+        "secure": false,
+        "changeOrigin": true,
+        "pathRewrite": {
+           "^/api": ""
+        }
+    }
+}

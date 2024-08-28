@@ -1,0 +1,198 @@
+<app-header></app-header>
+
+<style>
+.fixedToggleSwitch {
+  position: fixed;
+  top: 10%; /* Adjust this value to move it closer or further from the top */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+.fixedToggleSwitchAdditional {
+  position: fixed;
+  top: 10%; /* Adjust this value to move it closer or further from the top */
+  left: 70%;
+  transform: translateX(-50%);
+  z-index: 1000; /* Ensure it stays above other content */
+
+}
+
+.dot {
+  transition: left 0.3s ease-in-out;
+}
+</style>
+
+<style>
+
+.fixedToggle {
+    position: fixed; /* Use fixed positioning */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 1000; /* Ensure it's above other content */
+  }
+
+
+  .attacks-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates a 2x2 grid */
+    gap: 10px; /* Space between grid items */
+    margin-top: 20px; /* Space above the grid */
+  }
+
+  .attack-card {
+    background: #f9f9f9; /* Light background for the subcard */
+    padding: 10px; /* Padding inside each subcard */
+    border-radius: 8px; /* Rounded corners for the subcard */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+    text-align: center; /* Center the text */
+    height: 80px; /* Increased height */
+  }
+
+  /* Adjust the main card width and add more height */
+  .bg-white-card {
+    width: 45vw; /* Reduced width */
+    height: auto; /* Auto height to accommodate content */
+    padding: 20px; /* Increased padding */
+    margin: auto; /* Centering */
+    transform: translateY(-50%);
+    top: 40%;
+    position: relative;
+    background-color: honeydew; /* Light background color */
+  }
+</style>
+
+<div class="fixedToggle" *ngIf="showCard">
+  <div class="bg-white-card rounded-lg shadow-xl border-4 border-gray-200" *ngFor="let pokemonCard of pokemonsCard">
+    <!-- Basic Info + Description -->
+    <div class="flex flex-col space-y-2"> 
+      <img [src]="pokemonCard.image" alt="{{pokemonCard.name}}" class="w-24 h-24 object-cover rounded-full border-2 border-gray-300 self-center">
+      <h2 class="text-2xl font-bold text-center">Pokémon Name {{pokemonCard.name}}</h2>
+      <!-- Habitat picture -->
+      <div class="flex flex-row justify-evenly">
+        <!-- First column -->
+        <div class="flex flex-col space-y-2 text-lg">
+          <p>Type: {{pokemonCard.types.join(', ')}}</p>
+          <p>Level: <span class="text-blue-500">5</span></p>
+          <p>Height: <span>{{pokemonCard.height}}</span></p>
+          <p>Weight: <span>{{pokemonCard.weight}}</span></p>
+        </div>
+        
+        <!-- Second column -->
+        <div class="flex flex-col space-y-2 text-lg">
+          <p>Legendary <span [style.color]="pokemonCard.isLegendary ? 'green' : 'red'">{{pokemonCard.isLegendary ? 'YES' : 'NO'}}</span></p>
+          <p>Mythical <span [style.color]="pokemonCard.isLegendary ? 'green' : 'red'">{{pokemonCard.isLegendary ? 'YES' : 'NO'}}</span></p>
+          <p>Baby <span [style.color]="pokemonCard.isLegendary ? 'green' : 'red'">{{pokemonCard.isLegendary ? 'YES' : 'NO'}}</span></p>
+          <p>Habitat : <span>{{pokemonCard.habitat}}</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attacks in a 2x2 Grid -->
+    <div class="attacks-container">
+      <div class="attack-card attack-normal">Scratch<br>Damage: 10, Accuracy: 95%</div>
+      <div class="attack-card attack-fire">Growl<br>Damage: 5, Accuracy: 90%</div>
+      <div class="attack-card attack-water">Tackle<br>Damage: 12, Accuracy: 85%</div>
+      <div class="attack-card attack-grass">Quick Attack<br>Damage: 15, Accuracy: 100%</div>
+    </div>
+
+    <!-- Previous & Next Pokémon (No changes) -->
+    <div class="mt-8 pt-8 border-t-2 border-gray-100">
+      <div class="flex justify-between">
+        <div *ngIf="pokemonCard.previous_evolution !== 'None'" class="flex items-center space-x-2">
+          <img [src]="pokemonCard.previous_evolution_image" alt="Next" class="w-10 h-10 object-cover rounded-full">
+          <div>
+            <p class="text-sm">Prev: {{pokemonCard.previous_evolution}}</p>
+            <p class="text-xs">Lvl: //</p>
+          </div>
+        </div>
+        <div *ngIf="pokemonCard.evolution !== 'None'" class="flex items-center space-x-2">
+          <img [src]="pokemonCard.evolution_image" alt="Next" class="w-10 h-10 object-cover rounded-full">
+          <div>
+            <p class="text-sm">Next: {{pokemonCard.evolution}}</p>
+            <p class="text-xs">Lvl: //</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Close Button -->
+    <div class="text-center mt-4">
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" (click)="closePokemonCard()">Close</button>
+    </div>
+  </div>
+</div>
+
+<section class="text-gray-600 body-font">
+
+    <div class="container px-5 py-24 mx-auto">
+      <div class="flex flex-col text-center w-full mb-20">
+        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Pokémon Details</h1>
+        <h2 *ngIf="additionCard; else disableMode" class="text-green-500">Addition mode enabled</h2>
+        <ng-template #disableMode><h2 class="text-red-500">Addition mode disabled</h2></ng-template>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">Discover the details of your favorite Pokémon!</p>
+        <div class="flex items-center justify-center space-x-2 fixedToggleSwitch bg-cyan-500 hover:bg-cyan-600 rounded-full p-2">
+          <img src="https://cdn3.emoji.gg/emojis/4889-pokeball.png" alt="Pokéball" class="w-8 h-8">
+          <label for="shinyToggle" class="flex items-center cursor-pointer">
+            <div class="relative">
+              <input type="checkbox" id="shinyToggle" class="sr-only" [(ngModel)]="isShiny">
+              <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+              <!-- Un-comment and modify this div for the dot -->
+              <div [class]="isShiny ? 'dot absolute left-8 top-1 bg-white w-6 h-6 rounded-full transition' : 'dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition'"></div>
+            </div>
+            <div class="ml-3 text-gray-700 font-medium">
+              Show Shiny
+            </div>
+          </label>
+        </div>
+        <div class="flex items-center justify-center space-x-2 fixedToggleSwitchAdditional bg-cyan-500 hover:bg-cyan-600 rounded-full p-2">
+          <img src="https://cdn3.emoji.gg/emojis/4889-pokeball.png" alt="Pokéball" class="w-8 h-8">
+          <label for="additionCard" class="flex items-center cursor-pointer">
+            <div class="relative">
+              <input type="checkbox" id="additionCard" class="sr-only" [(ngModel)]="additionCard">
+              <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+              <!-- Un-comment and modify this div for the dot -->
+              <div [class]="additionCard ? 'dot absolute left-8 top-1 bg-white w-6 h-6 rounded-full transition' : 'dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition'"></div>
+            </div>
+            <div class="ml-3 text-gray-700 font-medium">
+              ADDITION mode
+            </div>
+          </label>
+        </div>
+    </div>
+      <div class="flex flex-wrap -m-4">
+        <div class="lg:w-1/6 sm:w-1/2 p-4" *ngFor="let pokemon of pokemons" (click)="openPokemonCard(pokemon.id)">
+            <div class="flex relative">
+                <img [alt]="pokemon.name" class="absolute inset-0 w-full h-full object-cover object-center" [src]="isShiny ? pokemon.imageShiny : pokemon.image">
+                <div class="pokemon-card relative z-10 w-full px-8 py-10 bg-white opacity-0 hover:opacity-100">
+                    <div class="absolute top-0 left-0 right-0 bottom-0 border-4" 
+                    [ngStyle]="pokemon.type.length > 1 ? 
+                               {'border-image': 'linear-gradient(to right, ' + getTypeColor(pokemon.type[0]) + ', ' + getTypeColor(pokemon.type[1]) + ') 1'} : 
+                               {'border-color': getTypeColor(pokemon.type[0])}">
+               </div>
+                <h2 class="tracking-widest text-sm title-font font-medium text-indigo-500 mb-1">NAME</h2>
+                <h1 class="title-font text-lg font-medium text-gray-900 mb-3">{{pokemon.name}}</h1>
+                <p class="leading-relaxed">Type: {{pokemon.type.join(', ')}}</p>
+                <p class="leading-relaxed">Weight: {{pokemon.weight}}</p>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+</section>
+<div class="flex items-center justify-center space-x-2 py-4">
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-l-lg" (click)="previousPage()">Previous</button>
+    <div class="absolute contents">
+    <img src="https://cdn3.emoji.gg/emojis/4889-pokeball.png" alt="Pokéball" class="bg-blue-500 w-8 h-8">
+    <span class="bg-blue-500 text-lg font-semibold">Page {{currentPage}}</span>
+    </div>
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-r-lg" (click)="nextPage()">Next</button>
+  </div>
+
+<app-footer></app-footer>
